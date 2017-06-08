@@ -36,7 +36,7 @@ int state = 0;
 const int interval = 60;
 
 // start timer at x seconds
-int timer = 60;
+int timer = 0;
 
 //------setup code
 
@@ -46,11 +46,8 @@ void setup() {
   if (!SD.begin(chipSelect)) {
     Serial.println("{\"error\":\"1\", \"msg\":\"SD-Card initialization failed!\"}");
   }
-
   clock.begin();
-  // Set sketch compiling time
-  clock.setDateTime(__DATE__, __TIME__);
-
+  
   Serial.println("{\"msg\":\"initialization done.\"}");
 }
 
@@ -74,7 +71,7 @@ void loop() {
 
   if (dataFile) {
     if(timer>=interval){
-
+      
       //--- read with raw data.
       byte temperature = 0;
       byte humidity = 0;
@@ -135,7 +132,10 @@ void getDump() {
       
       dumpFile.close();
       
-      Serial.println("{\"msg\":\"Read: success\", \"upload\":1}");
+      Serial.println("{\"msg\":\"send data: success\", \"upload\":1}");
+
+      SD.remove("data.txt");
+      Serial.println("{\"msg\":\"remove data\"}");
       
   }else{
     Serial.println("{\"error\":\"1\", \"msg\":\"cannot read file\"}");  
